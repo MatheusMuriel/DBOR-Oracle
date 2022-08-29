@@ -63,12 +63,12 @@ Coisas a usar:
     * Herança (De tipos)
     * Sobrecarga
     * Nested Tables
-  * VARRAYS  
-  Indices
+    * VARRAYS  
+    * Indices
 
-
-  Métodos MAP/ORDER
+  Métodos MAP/ORDER/MEMBER
   Invocação Específica/Generalizada
+  Expresão Específica/Generalizada
   REFs
   Dangling
   Tratamento de nulos
@@ -78,12 +78,7 @@ Coisas a usar:
     Check
   Trigger
   Usar alias
-  Member
-  Order
   Final e not Final
-  Expresão Generalizada
-  Invocação Generalizada
-  Invocação com sobrecarga
   Limitação de substituição com IS OF
   Treat
   Nesting/unnesting

@@ -6,30 +6,59 @@ class PersonTable <Nested Table> <<person_obj_table>> {
 }
 
 class Pessoa <<pessoa_typ>>{
+  +number id
   +string nome
   +number cpf
 }
 
-class Corretor <<corretor_typ>>
-class Segurado <<segurado_typ>>
+class Corretor <<corretor_typ>> {
+  +string corretora
+}
+class Segurado <<segurado_typ>> {
+  +number limite
+}
 
 Pessoa --|> Corretor: Herança
 Pessoa --|> Segurado: Herança
 
-PersonTable *-- Pessoa: Sobrecarga
+PersonTable *-- Pessoa
 PersonTable *-- Corretor: Sobrecarga
-PersonTable *-- Pessoa: Sobrecarga
+PersonTable *-- Segurado: Sobrecarga
 
-Class Cotação <<cotacao_typ>>
-Class Proposta <<proposta_typ>>
-Class Apolice <<apolice_typ>>
+Class Apolice <<apolice_typ>> {
+  +number id
+  +varray listaItens
+  +number valor
+  +Segurado segurado
+  +Corretor corretor
+  +Date dataEfitivação
+  +string status
+}
+Class Proposta <<proposta_typ>> {
+  +number valorBoleto
+  +Date vencimentoBoleto
+}
+Class Cotação <<cotacao_typ>> {
+  +Date dataCotaçao
+}
 
+Class Item <<item_typ>> {
+  +Number coordenada
+  +string produto
+  +number valor
+}
+Class ItensList <varray, index> <<item_array>>
 
-Class Itens <varray, index>
+Class ApoliceTable <Nested Table> <<apolice_obj_table>>
 
-Cotação *-up- Itens
+Apolice -- Item
+Item --* ItensList
 
-Cotação -down-|> Proposta
-Proposta -down-|> Apolice
+Cotação -up- Proposta
+Proposta -up- Apolice
+
+Apolice  -up-* ApoliceTable
+Proposta -up-* ApoliceTable
+Cotação  -up-* ApoliceTable
 
 @enduml
