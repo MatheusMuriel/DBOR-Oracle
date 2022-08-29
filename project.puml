@@ -1,0 +1,35 @@
+@startuml DBOR
+
+title Object Relation - Insurance Use Case
+
+class PersonTable <Nested Table> <<person_obj_table>> {
+}
+
+class Pessoa <<pessoa_typ>>{
+  +string nome
+  +number cpf
+}
+
+class Corretor <<corretor_typ>>
+class Segurado <<segurado_typ>>
+
+Pessoa --|> Corretor: Herança
+Pessoa --|> Segurado: Herança
+
+PersonTable *-- Pessoa: Sobrecarga
+PersonTable *-- Corretor: Sobrecarga
+PersonTable *-- Pessoa: Sobrecarga
+
+Class Cotação <<cotacao_typ>>
+Class Proposta <<proposta_typ>>
+Class Apolice <<apolice_typ>>
+
+
+Class Itens <varray, index>
+
+Cotação *-up- Itens
+
+Cotação -down-|> Proposta
+Proposta -down-|> Apolice
+
+@enduml

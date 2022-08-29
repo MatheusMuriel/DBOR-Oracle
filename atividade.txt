@@ -1,0 +1,92 @@
+
+
+Todo: BDOR Oracle
+https://classroom.google.com/u/0/c/NTI2MjY1MDgwMzgz/a/NTM5MDAyNjU1Mzg0/details
+
+
+Implementar um estudo de caso utilizando recursos objeto-relacionais no Oracle Database. 
+Procurem usar o máximo de recursos indicados nos slides 
+  * Herança
+  * Sobrecarga
+  * Métodos MAP/ORDER
+  * Invocação Específica/Generalizada
+  * VARRAYS
+  * Nested Tables
+  * REFs
+  * Etc...
+
+Lembrando de executar consultas interessantes sobre os dados
+  * INSERTs
+  * Consultas com dot navigation
+  * Deferência explícita e implícita
+  * Nested tables
+  * Etc...
+  
+-----
+Oq mais tem no Slide:
+Dangling
+Tratamento de nulos
+Restrição de 
+  Chave Primaria
+  Unique
+  Check
+Indices
+Trigger
+Usar alias
+Member
+Order
+Herança de tipos
+Final e not Final
+Expresão Generalizada
+Invocação Generalizada
+Invocação com sobrecarga
+Limitação de substituição com IS OF
+Treat
+Nesting/unnesting
+Nesting em multinivel
+Visao de objetos
+-----
+
+No início da próxima aula, cada aluno deverá apresentar o seu estudo de caso à turma. 
+Submeter no Classroom o script SQL com o estudo de caso.
+
+OBS: Recomendo que baixem a versão Enterprise direto do site da Oracle e instalem localmente. 
+Instalar o Oracle é um bom exercício. =) 
+Mas, tenho uma instância funcional do Oracle que posso conceder 
+acesso a quem não conseguir ou não quiser instalar. 
+Basta me escrever e concedo acesso.
+
+----------------------------------------------------------------
+
+Coisas a usar:
+  Projeto:
+    * Herança (De tipos)
+    * Sobrecarga
+    * Nested Tables
+  * VARRAYS  
+  Indices
+
+
+  Métodos MAP/ORDER
+  Invocação Específica/Generalizada
+  REFs
+  Dangling
+  Tratamento de nulos
+  Restrição de 
+    Chave Primaria
+    Unique
+    Check
+  Trigger
+  Usar alias
+  Member
+  Order
+  Final e not Final
+  Expresão Generalizada
+  Invocação Generalizada
+  Invocação com sobrecarga
+  Limitação de substituição com IS OF
+  Treat
+  Nesting/unnesting
+  Nesting em multinivel
+  Visao de objetos
+
