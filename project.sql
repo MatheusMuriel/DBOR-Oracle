@@ -1,50 +1,86 @@
 
-CREATE TYPE person_typ AS OBJECT (
+-- Matheus Muriel
+-- Banco de Dados não Convencionais
+-- Mestrado UEL - 2022
+-- ToDo 01 - DBOR Oracle
+-- Caso de uso baseado em Seguros
+
+
+CREATE TYPE pessoa_typ AS OBJECT (
   id        NUMBER,
   nome      VARCHAR2(20),
-  cpf       NUMBER
-  --MAP MEMBER FUNCTION get_idno RETURN NUMBER,
-  --MEMBER PROCEDURE display_details ( SELF IN OUT NOCOPY person_typ )
+  cpf       NUMBER,
+  MEMBER PROCEDURE display_details (SELF IN OUT NOCOPY pessoa_typ)
 ) NOT FINAL;
+CREATE TYPE BODY pessoa_typ AS 
+  MEMBER PROCEDURE display_details ( SELF IN OUT NOCOPY pessoa_typ ) IS
+  BEGIN
+    if SELF IS OF (ONLY CORRETOR_TYP) THEN
+      DBMS_OUTPUT.PUT_LINE('Corretor: ');
+    end if;
+    if SELF IS OF (ONLY SEGURADO_TYP) THEN
+      DBMS_OUTPUT.PUT_LINE('Segurado: ');
+    end if;
+    DBMS_OUTPUT.PUT_LINE(TO_CHAR(id) || ' ' || nome || ' ' || TO_CHAR(cpf));
+  END;
+END;
 
-CREATE TYPE corretor_typ UNDER person_typ (
+CREATE TYPE corretor_typ UNDER pessoa_typ (
   corretora   VARCHAR2(20)
 ) FINAL;
 
-CREATE TYPE segurado_typ UNDER person_typ (
+CREATE TYPE segurado_typ UNDER pessoa_typ (
   limite      NUMBER
 ) FINAL;
 
-CREATE TABLE person_obj_table OF person_typ (
+CREATE TABLE pessoa_obj_table OF pessoa_typ (
   id PRIMARY KEY,
-  cpf UNIQUE
+  cpf UNIQUE,
+  CHECK (nome IS NOT NULL)
 );
 
 
-INSERT INTO person_obj_table VALUES (person_typ(1,'Joao Silva',123));
-INSERT INTO person_obj_table VALUES (corretor_typ(2,'Gustavo Santos',234,'Corretora1'));
-INSERT INTO person_obj_table VALUES (segurado_typ(3,'Augusto',345,1000));
+INSERT INTO pessoa_obj_table VALUES (pessoa_typ(101,'Joao da Silva', 123));
+INSERT INTO pessoa_obj_table VALUES (corretor_typ(2,'Gustavo Santos',456,'Corretora1'));
+INSERT INTO pessoa_obj_table VALUES (segurado_typ(3,'Augusto Pereira',789,1000));
 
-SELECT VALUE(p) FROM person_obj_table p;
+SELECT VALUE(p) FROM pessoa_obj_table p;
+
+DECLARE pessoa pessoa_typ;
+BEGIN 
+  SELECT VALUE(p) INTO pessoa FROM pessoa_obj_table p WHERE p.id = 1;
+  pessoa.display_details();
+  DBMS_OUTPUT.PUT_LINE('------------');
+  SELECT VALUE(p) INTO pessoa FROM pessoa_obj_table p WHERE p.id = 2;
+  pessoa.display_details();
+  DBMS_OUTPUT.PUT_LINE('------------');
+  SELECT VALUE(p) INTO pessoa FROM pessoa_obj_table p WHERE p.id = 3;
+  pessoa.display_details();
+END;
 
 
--------------------
+-------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------
 CREATE TYPE item_typ AS OBJECT (
-  coordenada    NUMBER,
+  latitude      NUMBER,
+  longitude     NUMBER,
   produto       VARCHAR2(10),
   valor         NUMBER
-)
+);
 
 CREATE TYPE item_array AS 
   VARRAY(10) OF item_typ
 ;
 
-CREATE TYPE apolice_typ AS OBJECT (
+CREATE OR REPLACE TYPE apolice_typ AS OBJECT (
   id              NUMBER,
   listaItens      item_array,
   valor           NUMBER,
-  segurado        SEGURADO_TYP,
-  corretor        CORRETOR_TYP,
+  segurado        REF PESSOA_TYP,
+  corretor        REF PESSOA_TYP,
   dataEfetivacao  DATE,
   status          VARCHAR2(1)
 ) NOT FINAL;
@@ -56,9 +92,33 @@ CREATE TYPE proposta_typ UNDER apolice_typ (
 
 CREATE TYPE cotacao_typ UNDER proposta_typ (
   dataCotacao       DATE
-)
+);
 
 CREATE TABLE apolice_obj_table OF apolice_typ;
+
+
+INSERT INTO apolice_obj_table 
+  SELECT 1234, item_array(item_typ(123,123,'Soja',25.000),item_typ(200,200,'Café',25.000)), 50.000, ref(ps), ref(pc), SYSDATE, 'A' FROM pessoa_obj_table ps, pessoa_obj_table pc WHERE ps.ID=1 AND pc.ID=2
+;
+
+INSERT INTO apolice_obj_table 
+  SELECT 1235, item_array(item_typ(400,400,'Café',50.000), item_typ(456,456,'Trigo',10.000)), 60.000, ref(ps), ref(pc), SYSDATE, 'A' FROM pessoa_obj_table ps, pessoa_obj_table pc WHERE ps.ID=1 AND pc.ID=2
+;
+
+INSERT INTO apolice_obj_table 
+  SELECT 1235, item_array(item_typ(400,400,'Café',10.000), item_typ(456,456,'Trigo',50.000)), 60.000, ref(ps), ref(pc), SYSDATE, 'C' FROM pessoa_obj_table ps, pessoa_obj_table pc WHERE ps.ID=1 AND pc.ID=2
+;
+
+SELECT VALUE(ap) FROM apolice_obj_table ap;
+SELECT ap.* FROM apolice_obj_table ap;
+
+
+
+-------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------
 
 
 --- Tabela composta de Auditoria

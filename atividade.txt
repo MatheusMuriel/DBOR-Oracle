@@ -69,20 +69,11 @@ Coisas a usar:
     * Trigger
     * Chave Primaria
     * Unique
+    * Check
+    * REFs
+    * Visao de objetos
 
   Métodos MAP/ORDER/MEMBER
-  Invocação Específica/Generalizada
-  Expresão Específica/Generalizada
-  REFs
-  Dangling
-  Tratamento de nulos
-  Restrição de 
-    
-    Check
-  Usar alias
-  Limitação de substituição com IS OF
-  Treat
-  Nesting/unnesting
-  Nesting em multinivel
-  Visao de objetos
+
+  Fazer consultas*
 
