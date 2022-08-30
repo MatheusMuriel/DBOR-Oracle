@@ -42,8 +42,7 @@ CREATE TABLE pessoa_obj_table OF pessoa_typ (
   CHECK (nome IS NOT NULL)
 );
 
--- TODO - Inserts do outro ARQUIVO
--- TODO fazer VIEW do object
+-- Inserts do outro arquivo
 
 SELECT * FROM pessoa_obj_table; -- Padrão
 SELECT p.* FROM pessoa_obj_table p; --Alias
@@ -103,37 +102,38 @@ CREATE TABLE apolice_obj_table OF apolice_typ;
 
 -- Inserts do outro arquivo
 
-SELECT VALUE(ap) FROM apolice_obj_table ap;
 SELECT ap.* FROM apolice_obj_table ap;
-select ap.SEGURADO from apolice_obj_table ap;
-
-
+SELECT VALUE(ap) FROM apolice_obj_table ap;
+SELECT ap.SEGURADO.ID FROM apolice_obj_table ap;
+SELECT DEREF(ap.SEGURADO) FROM apolice_obj_table ap;
+SELECT ap.* FROM apolice_obj_table ap WHERE ap.SEGURADO.ID = 14;
 
 -------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------- Config e Auditoria --------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------------------
-
-
 --- Tabela composta de Auditoria
 CREATE TYPE produto_config_typ AS OBJECT (
   produto_id      NUMBER,
   base_de_calculo NUMBER,
-  valor_minimo    NUMBER
+  valor_minimo    NUMBER,
+  MAP MEMBER FUNCTION get_produto_id RETURN NUMBER
 ) FINAL;
+CREATE TYPE BODY produto_config_typ AS
+  MAP MEMBER FUNCTION get_produto_id RETURN NUMBER IS
+  BEGIN
+    RETURN produto_id;
+  END;
+END;
 
 CREATE TABLE produto_config_obj_table OF produto_config_typ (
   produto_id PRIMARY KEY
 );
 
+-- Tabela relacional com atributo de objeto
 CREATE TABLE produto_config_auditoria (
-  data_alteracao    NUMBER,
+  data_alteracao    DATE,
   config_produto    produto_config_typ
 );
-
-INSERT INTO produto_config_obj_table VALUES (produto_config_typ(1,2,3));
-INSERT INTO produto_config_auditoria VALUES (1, produto_config_typ(10,20,30));
 
 CREATE OR REPLACE TRIGGER produto_config_update_trigger
 AFTER UPDATE
@@ -142,7 +142,7 @@ FOR EACH ROW
 DECLARE old_config produto_config_typ;
 BEGIN
   INSERT INTO produto_config_auditoria 
-  VALUES (1, produto_config_typ(
+  VALUES (SYSDATE, produto_config_typ(
       :old.produto_id,
       :old.base_de_calculo,
       :old.valor_minimo
@@ -150,7 +150,12 @@ BEGIN
   );
 END;
 
-UPDATE produto_config_obj_table p SET p.base_de_calculo=10 WHERE p.produto_id=1;
+-- Inserts do outro arquivo
+
+SELECT pc.* FROM produto_config_obj_table pc;
+SELECT * FROM produto_config_auditoria;
+SELECT pc.* FROM produto_config_obj_table pc WHERE pc.produto_id=21;
+UPDATE produto_config_obj_table p SET p.base_de_calculo=20 WHERE p.produto_id=21;
 SELECT * FROM produto_config_auditoria;
 
 
