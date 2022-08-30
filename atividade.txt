@@ -65,6 +65,10 @@ Coisas a usar:
     * Nested Tables
     * VARRAYS  
     * Indices
+    * Final e Not Final
+    * Trigger
+    * Chave Primaria
+    * Unique
 
   Métodos MAP/ORDER/MEMBER
   Invocação Específica/Generalizada
@@ -73,12 +77,9 @@ Coisas a usar:
   Dangling
   Tratamento de nulos
   Restrição de 
-    Chave Primaria
-    Unique
+    
     Check
-  Trigger
   Usar alias
-  Final e not Final
   Limitação de substituição com IS OF
   Treat
   Nesting/unnesting
