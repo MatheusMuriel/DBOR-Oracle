@@ -6,19 +6,22 @@
 -- Caso de uso baseado em Seguros
 
 
+-------------------------------------------------------------------------------------------------------------------------
+----------------------------------------- Pessoa, Corretor, Segurado ----------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------
 CREATE TYPE pessoa_typ AS OBJECT (
   id        NUMBER,
-  nome      VARCHAR2(20),
+  nome      VARCHAR2(50),
   cpf       NUMBER,
   MEMBER PROCEDURE display_details (SELF IN OUT NOCOPY pessoa_typ)
 ) NOT FINAL;
 CREATE TYPE BODY pessoa_typ AS 
   MEMBER PROCEDURE display_details ( SELF IN OUT NOCOPY pessoa_typ ) IS
   BEGIN
-    if SELF IS OF (ONLY CORRETOR_TYP) THEN
+    if SELF IS OF (CORRETOR_TYP) THEN
       DBMS_OUTPUT.PUT_LINE('Corretor: ');
     end if;
-    if SELF IS OF (ONLY SEGURADO_TYP) THEN
+    if SELF IS OF (SEGURADO_TYP) THEN
       DBMS_OUTPUT.PUT_LINE('Segurado: ');
     end if;
     DBMS_OUTPUT.PUT_LINE(TO_CHAR(id) || ' ' || nome || ' ' || TO_CHAR(cpf));
@@ -39,13 +42,16 @@ CREATE TABLE pessoa_obj_table OF pessoa_typ (
   CHECK (nome IS NOT NULL)
 );
 
+-- TODO - Inserts do outro ARQUIVO
+-- TODO fazer VIEW do object
 
-INSERT INTO pessoa_obj_table VALUES (pessoa_typ(101,'Joao da Silva', 123));
-INSERT INTO pessoa_obj_table VALUES (corretor_typ(2,'Gustavo Santos',456,'Corretora1'));
-INSERT INTO pessoa_obj_table VALUES (segurado_typ(3,'Augusto Pereira',789,1000));
+SELECT * FROM pessoa_obj_table; -- Padrão
+SELECT p.* FROM pessoa_obj_table p; --Alias
+SELECT p.* FROM pessoa_obj_table p WHERE VALUE(P) IS OF (CORRETOR_TYP); -- Filtrando por tipo
+SELECT p.* FROM pessoa_obj_table p WHERE VALUE(P) IS OF (PESSOA_TYP); -- Mostrando os supertipos
+SELECT p.* FROM pessoa_obj_table p WHERE VALUE(P) IS OF (ONLY PESSOA_TYP); -- Filtrando por is only de um super tipo
 
-SELECT VALUE(p) FROM pessoa_obj_table p;
-
+-- Diferentes object viewer
 DECLARE pessoa pessoa_typ;
 BEGIN 
   SELECT VALUE(p) INTO pessoa FROM pessoa_obj_table p WHERE p.id = 1;
@@ -60,9 +66,7 @@ END;
 
 
 -------------------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------- Item e Apolice ----------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------------
 CREATE TYPE item_typ AS OBJECT (
   latitude      NUMBER,
@@ -97,20 +101,11 @@ CREATE TYPE cotacao_typ UNDER proposta_typ (
 CREATE TABLE apolice_obj_table OF apolice_typ;
 
 
-INSERT INTO apolice_obj_table 
-  SELECT 1234, item_array(item_typ(123,123,'Soja',25.000),item_typ(200,200,'Café',25.000)), 50.000, ref(ps), ref(pc), SYSDATE, 'A' FROM pessoa_obj_table ps, pessoa_obj_table pc WHERE ps.ID=1 AND pc.ID=2
-;
-
-INSERT INTO apolice_obj_table 
-  SELECT 1235, item_array(item_typ(400,400,'Café',50.000), item_typ(456,456,'Trigo',10.000)), 60.000, ref(ps), ref(pc), SYSDATE, 'A' FROM pessoa_obj_table ps, pessoa_obj_table pc WHERE ps.ID=1 AND pc.ID=2
-;
-
-INSERT INTO apolice_obj_table 
-  SELECT 1235, item_array(item_typ(400,400,'Café',10.000), item_typ(456,456,'Trigo',50.000)), 60.000, ref(ps), ref(pc), SYSDATE, 'C' FROM pessoa_obj_table ps, pessoa_obj_table pc WHERE ps.ID=1 AND pc.ID=2
-;
+-- Inserts do outro arquivo
 
 SELECT VALUE(ap) FROM apolice_obj_table ap;
 SELECT ap.* FROM apolice_obj_table ap;
+select ap.SEGURADO from apolice_obj_table ap;
 
 
 
